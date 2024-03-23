@@ -14,6 +14,8 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: secret
       MYSQL_DB: todos
+    networks:
+      - compose-network
 
   mysql:
     image: mysql:8.0
@@ -22,9 +24,14 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: todos
+    networks:
+      - compose-network
 
 volumes:
   todo-mysql-data:
     name: mysql-data
     external: false
     driver: local
+
+networks:
+  compose-network:
