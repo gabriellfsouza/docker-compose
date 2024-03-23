@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: compose-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    logging:
+      driver: json-file
+      options:
+        max-size: "200k"
+        max-file: "10"
+    ports:
+      - 3000:3000
+    env_file: .env
+    networks:
+      - compose-network
+
+  mysql:
+    container_name: compose-mysql
+    image: mysql:8.0
+    logging:
+      driver: json-file
+      options:
+        max-size: "200k"
+        max-file: "10"
+    volumes:
+      - type: volume
+        source: todo-mysql-data
+        target: /var/lib/mysql
+    env_file:
+      - .env.db
+    networks:
+      - compose-network
+
+  adminer:
+    container_name: compose-adminer
+    image: adminer
+    logging:
+      driver: json-file
+      options:
+        max-size: "200k"
+        max-file: "10"
+    restart: always
+    ports:
+     - 8080:8080
+    networks:
+      - compose-network
+
+volumes:
+  todo-mysql-data:
+    name: mysql-data
+    external: false
+    driver: local
+
+networks:
+  compose-network:
+    driver: bridge
